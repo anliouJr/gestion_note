@@ -12,6 +12,26 @@ pipeline {
                 bat 'composer install'
             }
         }
+
+        stage('Run spider') {
+            steps {
+                bat 'C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\spider.py'
+            }
+        }
+
+        stage('Run Scan active') {
+            steps {
+                bat 'C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\scan_actif.py'
+            }
+        }
+
+        stage('Run form_authentication') {
+            steps {
+                bat 'C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\automatiser\\test_selenium.py'
+            }
+        }
+
+
         stage('Run Tests') {
             steps {
                 // Génération d'un rapport XML de test
@@ -26,3 +46,4 @@ pipeline {
         }
     }
 }
+
