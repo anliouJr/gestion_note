@@ -15,22 +15,24 @@ pipeline {
 
         stage('Run spider') {
             steps {
-                bat 'C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\spider.py'
+                // Utilisation de guillemets pour gérer les espaces dans les chemins
+                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\spider.py"'
             }
         }
 
         stage('Run Scan active') {
             steps {
-                bat 'C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\scan_actif.py'
+                // Utilisation de guillemets pour gérer les espaces dans les chemins
+                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\scan_actif.py"'
             }
         }
 
         stage('Run form_authentication') {
             steps {
-                bat 'C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\automatiser\\test_selenium.py'
+                // Utilisation de guillemets pour gérer les espaces dans les chemins
+                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\automatiser\\test_selenium.py"'
             }
         }
-
 
         stage('Run Tests') {
             steps {
@@ -46,4 +48,3 @@ pipeline {
         }
     }
 }
-
