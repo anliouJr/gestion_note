@@ -48,7 +48,7 @@ pipeline {
         stage('SQLMap Scan') {
             steps {
                 script {
-                    def sqlmapCmd = 'sqlmap -u "http://localhost/restaurant/" --batch --output-dir="sqlmap_results" --level=3 --risk=2 --dbs'
+                    def sqlmapCmd = 'sqlmap -u "http://localhost/restaurant/" --batch --output-dir="sqlmap_results" --level=3 --risk=2 --dbs > sqlmap_results/sqlmap_report.txt'
                     def sqlmapResult = bat(script: sqlmapCmd, returnStatus: true)
 
                     if (sqlmapResult == 0) {
@@ -70,6 +70,20 @@ pipeline {
     post {
         always {
             junit 'test-results.xml'
+            
+            emailext (
+                to: 'anlioujunior12@gmail.com',
+                subject: "Résultat du pipeline - ${currentBuild.fullDisplayName}",
+                body: """Bonjour,
+
+                Le pipeline s'est exécuté avec le statut : ${currentBuild.currentResult}
+                Vous pouvez consulter les résultats ici : ${env.BUILD_URL}
+
+                **Rapport SQLMap** :
+                ${readFile('sqlmap_results/sqlmap_report.txt')}
+                """,
+                attachLog: true
+            )
         }
     }
 }
