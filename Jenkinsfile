@@ -73,16 +73,8 @@ pipeline {
             
             emailext (
                 to: 'anlioujunior12@gmail.com',
-                subject: "Résultat du pipeline - ${currentBuild.fullDisplayName}",
-                body: """Bonjour,
-
-                Le pipeline s'est exécuté avec le statut : ${currentBuild.currentResult}
-                Vous pouvez consulter les résultats ici : ${env.BUILD_URL}
-
-                **Rapport SQLMap** :
-                ${readFile('sqlmap_results/sqlmap_report.txt')}
-                """,
-                attachLog: true
+                subject: "Test e-mail Jenkins",
+                body: "Ceci est un test d'envoi d'e-mail via Jenkins. Statut du pipeline : ${currentBuild.currentResult}"
             )
         }
     }
