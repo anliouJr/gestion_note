@@ -67,23 +67,29 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            junit 'test-results.xml'
-            
-            emailext (
-                to: 'anlioujunior12@gmail.com',
-                subject: "Résultat du pipeline - ${currentBuild.fullDisplayName}",
-                body: """Bonjour,
+   post {
+    always {
+        junit 'test-results.xml'
 
-                Le pipeline s'est exécuté avec le statut : ${currentBuild.currentResult}
-                Vous pouvez consulter les résultats ici : ${env.BUILD_URL}
+        emailext(
+            to: 'anlioujunior12@gmail.com',
+            subject: "Résultat du pipeline - ${currentBuild.fullDisplayName}",
+            body: """Bonjour,
 
-                **Rapport SQLMap** :
-                ${readFile('sqlmap_results/sqlmap_report.txt')}
-                """,
-                attachLog: true
-            )
-        }
+            Le pipeline s'est exécuté avec le statut : ${currentBuild.currentResult}
+            Vous pouvez consulter les résultats ici : ${env.BUILD_URL}
+
+            **Rapport SQLMap** :
+            ${readFile('sqlmap_results/sqlmap_report.txt')}
+            """,
+            attachLog: true,
+            smtpHost: 'smtp.gmail.com',
+            smtpPort: '587',
+            smtpUser: 'anlioujunior12@gmail.com',
+            smtpPassword: 'yift aatj rujh mthq',
+            smtpAuth: true,
+            tls: true
+        )
     }
+}
 }
