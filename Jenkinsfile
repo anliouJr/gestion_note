@@ -45,6 +45,21 @@ pipeline {
             }
         }
 
+        stage('SQLMap Scan') {
+            steps {
+                script {
+                    def sqlmapCmd = 'sqlmap -u "http://localhost/restaurant/" --batch --output-dir="sqlmap_results" --level=3 --risk=2 --dbs'
+                    def sqlmapResult = bat(script: sqlmapCmd, returnStatus: true)
+
+                    if (sqlmapResult == 0) {
+                        echo "✅ Aucune vulnérabilité SQL détectée."
+                    } else {
+                        echo "⚠️  Des vulnérabilités SQL ont été détectées !"
+                    }
+                }
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 bat 'vendor\\bin\\phpunit --log-junit test-results.xml'
