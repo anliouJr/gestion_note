@@ -45,21 +45,6 @@ pipeline {
             }
         }
 
-        stage('SQLMap Scan') {
-            steps {
-                script {
-                    def sqlmapCmd = 'sqlmap -u "http://localhost/restaurant/" --batch --output-dir="sqlmap_results" --level=3 --risk=2 --dbs > sqlmap_results/sqlmap_report.txt'
-                    def sqlmapResult = bat(script: sqlmapCmd, returnStatus: true)
-
-                    if (sqlmapResult == 0) {
-                        echo "✅ Aucune vulnérabilité SQL détectée."
-                    } else {
-                        echo "⚠️  Des vulnérabilités SQL ont été détectées !"
-                    }
-                }
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 bat 'vendor\\bin\\phpunit --log-junit test-results.xml'
@@ -70,12 +55,21 @@ pipeline {
     post {
         always {
             junit 'test-results.xml'
-            
-            emailext (
-                to: 'anlioujunior12@gmail.com',
-                subject: "Test e-mail Jenkins",
-                body: "Ceci est un test d'envoi d'e-mail via Jenkins. Statut du pipeline : ${currentBuild.currentResult}"
-            )
+
+            // Envoi de l'email avec les informations du pipeline
+            mail to: 'anlioujunior12@gmail.com',
+                 subject: "[Jenkins] Exécution terminée : Pipeline gestion_note",
+                 body: """Bonjour,
+
+L'exécution du pipeline Jenkins est terminée.
+
+- ✅ Résultat : ${currentBuild.result}
+- 📅 Date : ${new Date()}
+- 🔍 Consultez Jenkins pour plus de détails : ${env.BUILD_URL}
+
+Cordialement,
+Jenkins
+"""
         }
     }
 }
