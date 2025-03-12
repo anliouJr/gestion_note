@@ -29,13 +29,13 @@ pipeline {
 
         stage('Run Spider') {
             steps {
-                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\spider.py"'
+                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\spider.py"'
             }
         }
 
         stage('Run Scan Active') {
             steps {
-                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\scan_actif.py"'
+                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\scan_actif.py"'
             }
         }
 
@@ -48,13 +48,13 @@ pipeline {
         stage('SQLMap Scan') {
             steps {
                 script {
-                    def sqlmapCmd = 'sqlmap -u "http://localhost/restaurant/login.php" --forms --crawl=2 --batch --dbs'
+                    def sqlmapCmd = 'sqlmap -u "http://localhost/restaurant/" --batch --output-dir="sqlmap_results" --level=3 --risk=2 --dbs'
                     def sqlmapResult = bat(script: sqlmapCmd, returnStatus: true)
 
                     if (sqlmapResult == 0) {
                         echo "✅ Aucune vulnérabilité SQL détectée."
                     } else {
-                        echo "⚠️ Des vulnérabilités SQL ont été détectées !"
+                        echo "⚠️  Des vulnérabilités SQL ont été détectées !"
                     }
                 }
             }
@@ -71,12 +71,6 @@ pipeline {
         always {
             junit 'test-results.xml'
 
-            // Vérification des résultats de SQLMap
-            def sqlmapResultFile = 'sqlmap_results/report.txt'
-            def sqlmapReport = readFile(sqlmapResultFile).toLowerCase()
-
-            def sqlmapVulnFound = sqlmapReport.contains("vulnerable") ? "SQLMap a trouvé des failles sur http://localhost/restaurant/login.php. Vérifie les logs dans Jenkins." : "Aucune vulnérabilité SQL détectée."
-
             // Envoi de l'email avec les informations du pipeline
             mail to: 'anlioujunior12@gmail.com',
                  subject: "[Jenkins] Exécution terminée : Pipeline gestion_note",
@@ -87,8 +81,6 @@ L'exécution du pipeline Jenkins est terminée.
 - ✅ Résultat : ${currentBuild.result}
 - 📅 Date : ${new Date()}
 - 🔍 Consultez Jenkins pour plus de détails : ${env.BUILD_URL}
-
-${sqlmapVulnFound}
 
 Cordialement,
 Jenkins
