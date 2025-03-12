@@ -45,9 +45,18 @@ pipeline {
             }
         }
 
-        stage('Run SQLMap') {
+        stage('SQLMap Scan') {
             steps {
-                bat 'python "C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\test_sqlmap.py"'
+                script {
+                    def sqlmapCmd = 'sqlmap -u "http://localhost/restaurant/login.php" --forms --crawl=2 --batch --dbs'
+                    def sqlmapResult = bat(script: sqlmapCmd, returnStatus: true)
+
+                    if (sqlmapResult == 0) {
+                        echo "✅ Aucune vulnérabilité SQL détectée."
+                    } else {
+                        echo "⚠️ Des vulnérabilités SQL ont été détectées !"
+                    }
+                }
             }
         }
 
@@ -62,6 +71,12 @@ pipeline {
         always {
             junit 'test-results.xml'
 
+            // Vérification des résultats de SQLMap
+            def sqlmapResultFile = 'sqlmap_results/report.txt'
+            def sqlmapReport = readFile(sqlmapResultFile).toLowerCase()
+
+            def sqlmapVulnFound = sqlmapReport.contains("vulnerable") ? "SQLMap a trouvé des failles sur http://localhost/restaurant/login.php. Vérifie les logs dans Jenkins." : "Aucune vulnérabilité SQL détectée."
+
             // Envoi de l'email avec les informations du pipeline
             mail to: 'anlioujunior12@gmail.com',
                  subject: "[Jenkins] Exécution terminée : Pipeline gestion_note",
@@ -73,7 +88,7 @@ L'exécution du pipeline Jenkins est terminée.
 - 📅 Date : ${new Date()}
 - 🔍 Consultez Jenkins pour plus de détails : ${env.BUILD_URL}
 
-Les résultats SQLMap sont stockés dans le dossier `sqlmap_results`.
+${sqlmapVulnFound}
 
 Cordialement,
 Jenkins
