@@ -29,19 +29,27 @@ pipeline {
 
         stage('Run Spider') {
             steps {
-                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\spider.py"'
+                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\spider.py"'
             }
         }
 
         stage('Run Scan Active') {
             steps {
-                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap \\scan_actif.py"'
+                bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\scan_actif.py"'
             }
         }
 
         stage('Run Form Authentication') {
             steps {
                 bat '"C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\automatiser\\test_selenium.py"'
+            }
+        }
+
+        stage('Run SQLMap') {
+            steps {
+                echo "🔍 Exécution des tests de vulnérabilités SQL avec SQLMap..."
+                bat 'python "C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\test_sqlmap.py"'
+                echo "✅ SQLMap terminé. Vérifiez les résultats dans sqlmap_results."
             }
         }
 
@@ -66,6 +74,8 @@ L'exécution du pipeline Jenkins est terminée.
 - ✅ Résultat : ${currentBuild.result}
 - 📅 Date : ${new Date()}
 - 🔍 Consultez Jenkins pour plus de détails : ${env.BUILD_URL}
+
+Les résultats SQLMap sont stockés dans le dossier `sqlmap_results`.
 
 Cordialement,
 Jenkins
