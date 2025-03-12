@@ -47,9 +47,7 @@ pipeline {
 
         stage('Run SQLMap') {
             steps {
-                echo "🔍 Exécution des tests de vulnérabilités SQL avec SQLMap..."
                 bat 'python "C:\\Users\\anlio\\OneDrive\\Bureau\\M1\\TEST LOGICIEL\\test zap\\test_sqlmap.py"'
-                echo "✅ SQLMap terminé. Vérifiez les résultats dans sqlmap_results."
             }
         }
 
